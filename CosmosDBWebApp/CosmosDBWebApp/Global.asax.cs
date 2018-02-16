@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CosmosDBWebApp.Models;
+using Microsoft.Azure.Documents.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -17,7 +19,7 @@ namespace CosmosDBWebApp
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            DocumentDBRepository<Models.Item>.Initialize();
+            Repository.Initialize();
         }
     }
 }

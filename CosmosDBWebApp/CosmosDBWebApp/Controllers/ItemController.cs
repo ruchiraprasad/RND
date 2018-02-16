@@ -14,7 +14,10 @@ namespace CosmosDBWebApp.Controllers
         [ActionName("Index")]
         public async Task<ActionResult> IndexAsync()
         {
-            var items = await DocumentDBRepository<Item>.GetItemsAsync(d => !d.Completed);
+            var items = await Repository.DocumentDBRepository<Item>.GetItemsAsync(d => !d.Completed);
+
+            var customers = await Repository.DocumentDBRepository<Customer>.GetItemsAsync();
+            //var items = new List<Item>();
             return View(items);
         }
 
@@ -31,7 +34,15 @@ namespace CosmosDBWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                await DocumentDBRepository<Item>.CreateItemAsync(item);
+                await Repository.DocumentDBRepository<Item>.CreateItemAsync(item);
+
+                var customer = new Customer()
+                {
+                    Name = item.Name +  "_customer",
+                    Email = item.Name + "@tiqri.com"
+                };
+                await Repository.DocumentDBRepository<Customer>.CreateItemAsync(customer);
+
                 return RedirectToAction("Index");
             }
 
@@ -46,7 +57,7 @@ namespace CosmosDBWebApp.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Item item = await DocumentDBRepository<Item>.GetItemAsync(id);
+            Item item = await Repository.DocumentDBRepository<Item>.GetItemAsync(id);
             if (item == null)
             {
                 return HttpNotFound();
@@ -62,7 +73,7 @@ namespace CosmosDBWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                await DocumentDBRepository<Item>.UpdateItemAsync(item.Id, item);
+                await Repository.DocumentDBRepository<Item>.UpdateItemAsync(item.Id, item);
                 return RedirectToAction("Index");
             }
 
